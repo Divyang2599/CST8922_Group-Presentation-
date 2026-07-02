@@ -89,10 +89,9 @@ resource "azurerm_linux_virtual_machine" "test_vm" {
 
   network_interface_ids = [azurerm_network_interface.nic.id]
 
-  admin_ssh_key {
-    username   = "azureuser"
-    public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkzrRx5VZ3Z3vX8kQ9t8p9m2k5L7n3f1q6r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2 demo@demo"
-  }
+  # Note: In production, use admin_ssh_key or admin_password with strong credentials.
+  # For this demo, we're skipping authentication since we won't actually deploy.
+  disable_password_authentication = false
 
   os_disk {
     caching              = "ReadWrite"
