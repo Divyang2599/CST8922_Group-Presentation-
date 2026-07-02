@@ -90,8 +90,9 @@ resource "azurerm_linux_virtual_machine" "test_vm" {
   network_interface_ids = [azurerm_network_interface.nic.id]
 
   admin_ssh_key {
-    username   = "azureuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    username                        = "azureuser"
+    admin_password                  = "DemoPass123!@#"  # For demo only — never use in production
+    disable_password_authentication = false
   }
 
   os_disk {
