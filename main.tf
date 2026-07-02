@@ -31,7 +31,7 @@ resource "azurerm_storage_account" "data" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  allow_nested_items_to_be_public = true         # <-- security risk
+  allow_nested_items_to_be_public = true         # <-- SECURITY RISK
 }
 
 # ISSUE 2: Network Security Group allows SSH from the entire internet.
@@ -48,12 +48,11 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "0.0.0.0/0"     # <-- security risk, should be a scoped IP/CIDR
+    source_address_prefix      = "0.0.0.0/0"     # <-- SECURITY RISK, should be a scoped IP/CIDR
     destination_address_prefix = "*"
   }
 }
 
-# ISSUE 3: VM massively oversized for a small test workload — cost waste.
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-cloudnova-demo"
   address_space       = ["10.0.0.0/16"]
@@ -80,19 +79,19 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# ISSUE 3: VM massively oversized for a small test workload — cost waste.
 resource "azurerm_linux_virtual_machine" "test_vm" {
   name                = "testvm1"                  # ISSUE 4 (again): no env/owner/purpose in name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  size                = "Standard_D8s_v3"           # <-- cost waste: 8 vCPU / 32GB for a "small test workload"
+  size                = "Standard_D8s_v3"           # <-- COST WASTE: 8 vCPU / 32GB for a "small test workload"
   admin_username      = "azureuser"
 
   network_interface_ids = [azurerm_network_interface.nic.id]
 
   admin_ssh_key {
-    username                        = "azureuser"
-    admin_password                  = "DemoPass123!@#"  # For demo only — never use in production
-    disable_password_authentication = false
+    username   = "azureuser"
+    public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDkzrRx5VZ3Z3vX8kQ9t8p9m2k5L7n3f1q6r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2 demo@demo"
   }
 
   os_disk {
