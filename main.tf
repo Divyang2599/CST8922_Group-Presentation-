@@ -17,24 +17,24 @@ provider "azurerm" {
 # ---------------------------------------------------------------------------
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-cloudnova-prod"  # ✅ FIXED: Clear, descriptive name
+  name     = "rg-cloudnova-prod"  #  FIXED: Clear, descriptive name
   location = "canadacentral"
 }
 
-# ✅ FIXED: Public blob access disabled
+#  FIXED: Public blob access disabled
 resource "azurerm_storage_account" "data" {
-  name                     = "stcloudnovaprod01"          # ✅ FIXED: Proper naming standard (st = storage, company, env, number)
+  name                     = "stcloudnovaprod01"          # FIXED: Proper naming standard (st = storage, company, env, number)
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  allow_nested_items_to_be_public = false  # ✅ FIXED: Now blocked - data is protected
+  allow_nested_items_to_be_public = false  #  FIXED: Now blocked - data is protected
 }
 
-# ✅ FIXED: SSH restricted to specific IP range only
+#  FIXED: SSH restricted to specific IP range only
 resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg-cloudnova-prod"             # ✅ FIXED: Production naming
+  name                = "nsg-cloudnova-prod"             #  FIXED: Production naming
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "203.0.113.0/24"        # ✅ FIXED: Only trusted corporate IP range
+    source_address_prefix      = "203.0.113.0/24"        #  FIXED: Only trusted corporate IP range
     destination_address_prefix = "*"
   }
 }
@@ -66,7 +66,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "nic-appvm-prod-01"              # ✅ FIXED: Clear naming (nic-purpose-env-number)
+  name                = "nic-appvm-prod-01"              #  FIXED: Clear naming (nic-purpose-env-number)
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -77,12 +77,12 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# ✅ FIXED: Appropriately sized VM for production workload
+#  FIXED: Appropriately sized VM for production workload
 resource "azurerm_linux_virtual_machine" "app_vm" {
-  name                = "vm-app-prod-01"                 # ✅ FIXED: Clear naming standard (vm-purpose-env-number)
+  name                = "vm-app-prod-01"                 #  FIXED: Clear naming standard (vm-purpose-env-number)
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  size                = "Standard_B2s"                   # ✅ FIXED: Appropriate for production (2vCPU, 4GB)
+  size                = "Standard_B2s"                   #  FIXED: Appropriate for production (2vCPU, 4GB)
 
   admin_username = "azureuser"
 
